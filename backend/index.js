@@ -24,6 +24,7 @@ if(!req.file){
 const OriginalImage = req.file.buffer;
 
 const CompressedImage= await sharp(OriginalImage)
+.rotate()
 .resize({
     width:1600,
     withoutEnlargement:true,
