@@ -13,7 +13,7 @@ const upload = multer({
 
 const app= express();
 app.use(cors({
-    origin: "https://compress-img-now.vercel.app/"
+    origin: "https://compress-img-now.vercel.app"
 }));
 
 app.post("/upload",upload.single("image"),async (req,res)=>{
