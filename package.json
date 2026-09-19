@@ -1,0 +1,20 @@
+{
+  "name": "imageproject",
+  "version": "1.0.0",
+  "description": "A coding project",
+  "license": "ISC",
+  "author": "Abhinav",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "multer": "^2.4.0",
+    "nodemon": "^3.1.14",
+    "sharp": "^0.35.4"
+  }
+}

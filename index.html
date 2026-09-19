@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Compressor</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --text: #000000;
+      --muted: #6b6b6b;
+      --border: #000000;
+      --soft: #f4f4f4;
+
+      /* spacing */
+      --s1: 6px;
+      --s2: 12px;
+      --s3: 16px;
+      --s4: 20px;
+      --s5: 32px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      font-size: 14px;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: var(--s5) var(--s2);
+      line-height: 1.5;
+    }
+
+    .wrap {
+      width: 100%;
+      max-width: 380px;
+      display: flex;
+      flex-direction: column;
+      gap: var(--s3);
+    }
+
+    header { text-align: center; }
+    header h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 4px;
+    }
+    header p { color: var(--muted); font-size: 0.85rem; }
+
+    .card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: var(--s3);
+      display: flex;
+      flex-direction: column;
+      gap: var(--s2);
+    }
+
+    .card h2 { font-size: 0.9rem; font-weight: 600; }
+
+    /* Upload area */
+    .dropzone {
+      display: block;
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+      padding: var(--s4) var(--s2);
+      text-align: center;
+      cursor: pointer;
+      color: var(--muted);
+      background: var(--soft);
+      font-size: 0.85rem;
+      transition: background 0.2s, color 0.2s;
+    }
+    .dropzone:hover {
+      background: #ebebeb;
+      color: var(--text);
+    }
+    .dropzone input { display: none; }
+
+    /* Preview image */
+    .preview {
+      display: block;
+      width: 100%;
+      max-height: 180px;
+      object-fit: contain;
+      border-radius: 8px;
+      background: var(--soft);
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--s1);
+      width: 100%;
+      height: 40px;
+      padding: 0 var(--s3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, transform 0.1s;
+    }
+    .btn:hover {
+      background: var(--text);
+      color: var(--bg);
+    }
+    .btn:active { transform: translateY(1px); }
+    .btn:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
+    .btn svg { width: 15px; height: 15px; }
+
+    /* Result  */
+    .result-empty {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+      padding: var(--s3) var(--s2);
+      border-radius: 8px;
+      background: var(--soft);
+    }
+    #resultBox {
+      display: flex;
+      flex-direction: column;
+      gap: var(--s2);
+    }
+    .sizes {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    /* Hidden */
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Shrink your images</h1>
+      <p>Upload a photo, compress it, and download the smaller file.</p>
+    </header>
+
+    <!-- upload -->
+    <section class="card">
+      <h2>Your image</h2>
+      <label class="dropzone" for="imageInput">
+        Click to choose an image
+        <input type="file" id="imageInput" accept="image/*">
+      </label>
+
+      <!-- Show the selected image -->
+      <img id="originalPreview" class="preview hidden" src="" alt="Selected image preview">
+
+      <button class="btn" id="compressBtn" type="button">Compress image</button>
+    </section>
+
+    <!-- result -->
+    <section class="card">
+      <h2>Compressed image</h2>
+
+      <!-- Shown before compression -->
+      <p class="result-empty" id="resultEmpty">Your compressed image will show up here.</p>
+
+      <!-- after backend responds -->
+      <div id="resultBox" class="hidden">
+        <img id="compressedPreview" class="preview" src="" alt="Compressed image">
+        <div class="sizes">
+          <span id="originalSize">Original: -</span>
+          <span id="compressedSize">Compressed: -</span>
+        </div>
+        <a class="btn" id="downloadLink" href="#" download="compressed-image.jpg">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 21h14"/>
+          </svg>
+          Download image
+        </a>
+      </div>
+    </section>
+  </div>
+  <script src="./script.js"></script>
+</body>
+</html>
