@@ -7,7 +7,7 @@ const PORT = process.env.PORT || 3000;
 const upload = multer({
     storage: multer.memoryStorage(),
     limits: {
-        fileSize: 50 * 1024 * 1024 }
+        fileSize: 90 * 1024 * 1024 }
 
 });
 
@@ -44,7 +44,76 @@ res.type("image/jpeg").send(CompressedImage);
 
 } );
 
+app.post("/passport", upload.single("passport"), async (req, res) => {
 
+
+    const copies= Number(req.body.copies);
+    if (!req.file) {
+        return res.status(400).json({ error: "upload a passport image." });
+    }
+
+    if (!copies || copies < 1) {
+        return res.status(400).json({ error: "specify the number of copies." });
+    }
+
+    const imagebuffer= req.file.buffer;
+
+    const photowdith = 413;
+    const photoheight = 531;
+
+    const passportImage = await sharp(imagebuffer)
+    .resize(photowdith, photoheight,{
+        fit: "cover",
+        position : "center"
+    })
+    .jpeg({
+        quality: 80,
+    })
+    .toBuffer();
+
+
+    const a4width = 2480;
+    const a4height = 3508;
+
+    const gap=30;
+
+    const columns = Math.floor((a4width + gap) / (photowdith + gap));
+
+    const rows = Math.ceil(copies / columns);
+
+    if(rows * (photoheight + gap) - gap > a4height){
+        return res.status(400).json({ error: "too many copies to fit on an A4 page." });
+    }
+
+    const composite = [];
+
+    for (let i = 0; i < copies; i++) {
+        const column = i % columns;
+        const row = Math.floor(i / columns);
+        composite.push({
+            input: passportImage,
+            top: row * (photoheight + gap),
+            left: column * (photowdith + gap)
+        });
+    }
+
+    const a4Image = await sharp({
+        create: {
+            width: a4width,
+            height: a4height,
+            channels: 3,
+            background: "white"
+        }
+    })
+    .composite(composite)
+    .jpeg({
+        quality: 80
+    })
+    .toBuffer();
+
+    res.type("image/jpeg").send(a4Image);
+
+});
 app.listen(PORT, ()=>{
     console.log(`Server is running on port ${PORT}`);
 });
