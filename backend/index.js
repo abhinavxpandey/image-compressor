@@ -46,6 +46,7 @@ res.type("image/jpeg").send(CompressedImage);
 
 app.post("/passport", upload.single("passport"), async (req, res) => {
 
+    try{
 
     const copies= Number(req.body.copies);
     if (!req.file) {
@@ -77,9 +78,9 @@ app.post("/passport", upload.single("passport"), async (req, res) => {
 
     const gap=30;
 
-    const columns = Math.floor((a4width + gap) / (photowdith + gap));
+    const columns = 5
 
-    const rows = Math.ceil(copies / columns);
+    const rows = 6
 
     if(rows * (photoheight + gap) - gap > a4height){
         return res.status(400).json({ error: "too many copies to fit on an A4 page." });
@@ -112,6 +113,11 @@ app.post("/passport", upload.single("passport"), async (req, res) => {
     .toBuffer();
 
     res.type("image/jpeg").send(a4Image);
+} 
+catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "failed to process the passport image." });
+}
 
 });
 app.listen(PORT, ()=>{
